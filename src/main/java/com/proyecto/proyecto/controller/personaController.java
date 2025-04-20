@@ -1,4 +1,4 @@
 package com.proyecto.proyecto.controller;
 
-public class habitacioncontroller {
+public class personaController {
 }
