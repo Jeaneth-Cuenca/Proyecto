@@ -1,7 +1,5 @@
 package com.proyecto.proyecto.model;
 
-import jakarta.persistence.*;
-
 public class Habitacion {
 
     private Long id;
