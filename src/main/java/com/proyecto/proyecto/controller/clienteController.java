@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/clientes")
-public class ClienteController {
+public class clienteController {
     private static final Logger logger = LoggerFactory.getLogger(clienteController.class);
     private final List<Cliente> clientes = new ArrayList<>();
     @GetMapping

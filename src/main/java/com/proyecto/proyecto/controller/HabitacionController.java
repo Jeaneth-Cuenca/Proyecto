@@ -1,20 +1,19 @@
 package com.proyecto.proyecto.controller;
-import com.proyecto.proyecto.model.Cliente;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-
 @RestController
 @RequestMapping("/clientes")
-class clienteController {
-    private static final Logger logger = LoggerFactory.getLogger(clienteController.class);
+class HabitacionController {
+    private static final Logger logger = LoggerFactory.getLogger(HabitacionController.class);
     private final List<Cliente> clientes = new ArrayList<>();
 
     @GetMapping
@@ -39,9 +38,9 @@ class clienteController {
 
     @PostMapping
     public ResponseEntity<Cliente> create(@RequestBody Cliente nuevo) {
-        if (nuevo.getId() == null || nuevo.getNombre() == null || nuevo.getGmail() == null || nuevo.getTelefono() == null) {
-            logger.error("los datos estan incompletos para la creacion de un cliente: {}", nuevo);
-            return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
+        if (nuevo.getNombre() == null || nuevo.getGmail() == null || nuevo.getTelefono() == null) {
+            logger.error("Los datos están incompletos para la creación de un cliente: {}", nuevo);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         clientes.add(nuevo);
         logger.info("Cliente añadido: {}", nuevo);
@@ -89,5 +88,38 @@ class clienteController {
             return new ResponseEntity<>("No se encontró el cliente", HttpStatus.NOT_FOUND);
         }
     }
+    public static class Cliente {
+        private Long id;
+        private String nombre;
+        private String gmail;
+        private String telefono;
+        public Long getId() {
+            return id;
+        }
+        public String getNombre() {
+            return nombre;
+        }
+        public String getGmail() {
+            return gmail;
+        }
+        public String getTelefono() {
+            return telefono;
+        }
+        public void setId(Long id) {
+            this.id = id;
+        }
+        public void setNombre(String nombre) {
+            this.nombre = nombre;
+        }
+        public void setGmail(String gmail) {
+            this.gmail = gmail;
+        }
+        public void setTelefono(String telefono) {
+            this.telefono = telefono;
+        }
+        @Override
+        public String toString() {
+            return "Cliente{id=" + id + ", nombre='" + nombre + "', gmail='" + gmail + "', telefono='" + telefono + "'}";
+        }
+    }
 }
-
