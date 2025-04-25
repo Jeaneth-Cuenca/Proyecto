@@ -8,7 +8,7 @@ public class Persona {
     public Persona(Long id, String nombre, String gmail) {
         this.id = id;
         this.nombre = nombre;
-        this.id = id;
+        this.gmail = gmail;
     }
     public Long getId() {
         return id;
@@ -22,10 +22,10 @@ public class Persona {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    public String getgmail() {
+    public String getGmail() {
         return gmail;
     }
-    public void setgmail(String gmail) {
+    public void setGmail(String Gmail) {
         this.gmail = gmail;
     }
 }

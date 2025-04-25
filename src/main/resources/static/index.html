@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Gestión de Alojamiento</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        h1 {
+            color: #1a5276;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #2471a3;
+            border-left: 5px solid #2471a3;
+            padding-left: 15px;
+            margin-top: 25px;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .search-container {
+            display: flex;
+            margin: 15px 0;
+            align-items: center;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+            flex-grow: 1;
+            max-width: 250px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        li {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+        li:hover {
+            background-color: #f5f9ff;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        .result {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 3px solid #3498db;
+            min-height: 20px;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .empty-message {
+            color: #7f8c8d;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+        .error {
+            border-left-color: #e74c3c;
+        }
+        .success {
+            border-left-color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+<h1>Sistema de Gestión de Alojamiento</h1>
+
+<!-- === PERSONAS === -->
+<div class="container">
+    <div class="header-actions">
+        <h2>Personas</h2>
+        <button onclick="cargarPersonas()">Ver todas las personas</button>
+    </div>
+    <ul id="listaPersonas">
+        <div class="empty-message">Haga clic en "Ver todas las personas" para mostrar los datos</div>
+    </ul>
+
+    <div class="search-container">
+        <input type="number" id="idPersona" placeholder="Buscar Persona por ID">
+        <button onclick="buscarPersona()">Buscar</button>
+    </div>
+    <div id="resultadoPersona" class="result"></div>
+</div>
+
+<!-- === CLIENTES === -->
+<div class="container">
+    <div class="header-actions">
+        <h2>Clientes</h2>
+        <button onclick="cargarClientes()">Ver todos los clientes</button>
+    </div>
+    <ul id="listaClientes">
+        <div class="empty-message">Haga clic en "Ver todos los clientes" para mostrar los datos</div>
+    </ul>
+
+    <div class="search-container">
+        <input type="number" id="idCliente" placeholder="Buscar Cliente por ID">
+        <button onclick="buscarCliente()">Buscar</button>
+    </div>
+    <div id="resultadoCliente" class="result"></div>
+</div>
+
+<!-- === HABITACIONES === -->
+<div class="container">
+    <div class="header-actions">
+        <h2>Habitaciones</h2>
+        <button onclick="cargarHabitaciones()">Ver todas las habitaciones</button>
+    </div>
+    <ul id="listaHabitaciones">
+        <div class="empty-message">Haga clic en "Ver todas las habitaciones" para mostrar los datos</div>
+    </ul>
+
+    <div class="search-container">
+        <input type="number" id="idHabitacion" placeholder="Buscar Habitación por ID">
+        <button onclick="buscarHabitacion()">Buscar</button>
+    </div>
+    <div id="resultadoHabitacion" class="result"></div>
+</div>
+
+<script>
+    // Función para manejar errores de fetch
+    function handleFetchError(error, elementId, message) {
+        document.getElementById(elementId).innerHTML =
+            <div class="empty-message">${message || 'Error al cargar datos. Intente nuevamente.'}</div>;
+        console.error(Error en operación fetch: ${error});
+    }
+
+    // PERSONAS
+    function cargarPersonas() {
+        const listaElement = document.getElementById("listaPersonas");
+        listaElement.innerHTML = '<div class="empty-message">Cargando personas...</div>';
+
+        fetch('/personas')
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(Error HTTP: ${res.status});
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (!data || data.length === 0) {
+                    listaElement.innerHTML = '<div class="empty-message">No hay personas registradas</div>';
+                    return;
+                }
+
+                listaElement.innerHTML = "";
+                data.forEach(p => {
+                    const li = document.createElement("li");
+                    li.textContent = ID: ${p.id} - Nombre: ${p.nombre} - Gmail: ${p.gmail};
+                    listaElement.appendChild(li);
+                });
+            })
+            .catch(error => {
+                handleFetchError(error, "listaPersonas");
+            });
+    }
+
+    function buscarPersona() {
+        const id = document.getElementById("idPersona").value;
+        const resultado = document.getElementById("resultadoPersona");
+
+        // Resetear clases
+        resultado.className = "result";
+
+        if (!id) {
+            resultado.textContent = "Por favor, ingrese un ID válido.";
+            resultado.classList.add("error");
+            return;
+        }
+
+        resultado.textContent = "Buscando...";
+
+        fetch(/personas/${id})
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(Persona no encontrada.);
+                }
+                return res.json();
+            })
+            .then(p => {
+                resultado.textContent = ID: ${p.id} - Nombre: ${p.nombre} - Gmail: ${p.gmail};
+                resultado.classList.add("success");
+            })
+            .catch(() => {
+                resultado.textContent = "Persona no encontrada.";
+                resultado.classList.add("error");
+            });
+    }
+
+    // CLIENTES
+    function cargarClientes() {
+        const listaElement = document.getElementById("listaClientes");
+        listaElement.innerHTML = '<div class="empty-message">Cargando clientes...</div>';
+
+        fetch('/clientes')
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(Error HTTP: ${res.status});
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (!data || data.length === 0) {
+                    listaElement.innerHTML = '<div class="empty-message">No hay clientes registrados</div>';
+                    return;
+                }
+
+                listaElement.innerHTML = "";
+                data.forEach(c => {
+                    const li = document.createElement("li");
+                    li.textContent = ID: ${c.id} - Nombre: ${c.nombre} - Gmail: ${c.gmail} - Teléfono: ${c.telefono};
+                    listaElement.appendChild(li);
+                });
+            })
+            .catch(error => {
+                handleFetchError(error, "listaClientes");
+            });
+    }
+
+    function buscarCliente() {
+        const id = document.getElementById("idCliente").value;
+        const resultado = document.getElementById("resultadoCliente");
+
+        // Resetear clases
+        resultado.className = "result";
+
+        if (!id) {
+            resultado.textContent = "Por favor, ingrese un ID válido.";
+            resultado.classList.add("error");
+            return;
+        }
+
+        resultado.textContent = "Buscando...";
+
+        fetch(/clientes/${id})
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(Cliente no encontrado.);
+                }
+                return res.json();
+            })
+            .then(c => {
+                resultado.textContent = ID: ${c.id} - Nombre: ${c.nombre} - Gmail: ${c.gmail} - Teléfono: ${c.telefono};
+                resultado.classList.add("success");
+            })
+            .catch(() => {
+                resultado.textContent = "Cliente no encontrado.";
+                resultado.classList.add("error");
+            });
+    }
+
+    // HABITACIONES
+    function cargarHabitaciones() {
+        const listaElement = document.getElementById("listaHabitaciones");
+        listaElement.innerHTML = '<div class="empty-message">Cargando habitaciones...</div>';
+
+        fetch('/habitaciones')
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(Error HTTP: ${res.status});
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (!data || data.length === 0) {
+                    listaElement.innerHTML = '<div class="empty-message">No hay habitaciones registradas</div>';
+                    return;
+                }
+
+                listaElement.innerHTML = "";
+                data.forEach(h => {
+                    const li = document.createElement("li");
+                    li.textContent = ID: ${h.id} - Número: ${h.numero} - Tipo: ${h.tipo};
+                    listaElement.appendChild(li);
+                });
+            })
+            .catch(error => {
+                handleFetchError(error, "listaHabitaciones");
+            });
+    }
+
+    function buscarHabitacion() {
+        const id = document.getElementById("idHabitacion").value;
+        const resultado = document.getElementById("resultadoHabitacion");
+
+        // Resetear clases
+        resultado.className = "result";
+
+        if (!id) {
+            resultado.textContent = "Por favor, ingrese un ID válido.";
+            resultado.classList.add("error");
+            return;
+        }
+
+        resultado.textContent = "Buscando...";
+
+        fetch(/habitaciones/${id})
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(Habitación no encontrada.);
+                }
+                return res.json();
+            })
+            .then(h => {
+                resultado.textContent = ID: ${h.id} - Número: ${h.numero} - Tipo: ${h.tipo};
+                resultado.classList.add("success");
+            })
+            .catch(() => {
+                resultado.textContent = "Habitación no encontrada.";
+                resultado.classList.add("error");
+            });
+    }
+
+    // Agregar eventos para buscar con Enter en los inputs
+    document.getElementById("idPersona").addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            buscarPersona();
+        }
+    });
+
+    document.getElementById("idCliente").addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            buscarCliente();
+        }
+    });
+
+    document.getElementById("idHabitacion").addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            buscarHabitacion();
+        }
+    });
+</script>
+</body>
+</html>
