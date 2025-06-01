@@ -35,7 +35,7 @@ public class clienteController {
 
     @PostMapping
     public ResponseEntity<Cliente> create(@RequestBody Cliente nuevo) {
-        if (nuevo.getId() == null || nuevo.getNombre() == null || nuevo.getGmail() == null || nuevo.getTelefono() == null) {
+        if (nuevo.getId() == null || nuevo.getNombre() == null || nuevo.getGmail() == null || nuevo.getCelular() == null) {
             logger.error("los datos estan incompletos para la creacion de un cliente: {}", nuevo);
             return new ResponseEntity<>( HttpStatus.BAD_REQUEST);
         }
@@ -49,7 +49,7 @@ public class clienteController {
             if (c.getId().equals(id)) {
                 c.setNombre(actualizado.getNombre());
                 c.setGmail(actualizado.getGmail());
-                c.setTelefono(actualizado.getTelefono());
+                c.setTelefono(actualizado.getCelular());
                 logger.info("Cliente actualizado: {}", c);
                 return new ResponseEntity<>(c, HttpStatus.OK);
             }
@@ -63,7 +63,7 @@ public class clienteController {
             if (c.getId().equals(id)) {
                 if (datos.getNombre() != null) c.setNombre(datos.getNombre());
                 if (datos.getGmail() != null) c.setGmail(datos.getGmail());
-                if (datos.getTelefono() != null) c.setTelefono(datos.getTelefono());
+                if (datos.getCelular() != null) c.setTelefono(datos.getCelular());
                 logger.info("Cliente modificado parcialmente: {}", c);
                 return new ResponseEntity<>(c, HttpStatus.OK);
             }

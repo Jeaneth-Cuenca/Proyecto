@@ -3,16 +3,16 @@ public class Cliente {
     public Long id;
     private String nombre;
     private String gmail;
-    private String telefono;
+    private String celular;
 
     public Cliente() {
     }
 
-    public Cliente(Long id, String nombre, String gmail, String telefono) {
+    public Cliente(Long id, String nombre, String gmail, String celular) {
         this.id = id;
         this.nombre = nombre;
         this.gmail = gmail;
-        this.telefono = telefono;
+        this.celular= celular;
     }
 
     public Long getId() {
@@ -39,11 +39,11 @@ public class Cliente {
         this.gmail = gmail;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public String getCelular() {
+        return celular;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setCelular(String celular) {
+        this.celular = celular;
     }
 }
