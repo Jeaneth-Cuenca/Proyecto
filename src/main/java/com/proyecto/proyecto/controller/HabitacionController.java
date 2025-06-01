@@ -1,125 +1,33 @@
 package com.proyecto.proyecto.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import com.proyecto.proyecto.model.Habitacion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.*;
+
 @RestController
-@RequestMapping("/clientes")
-class HabitacionController {
+@RequestMapping("/habitaciones")
+public class HabitacionController {
+
     private static final Logger logger = LoggerFactory.getLogger(HabitacionController.class);
-    private final List<Cliente> clientes = new ArrayList<>();
-
-    @GetMapping
-    public ResponseEntity<List<Cliente>> getAll() {
-        logger.info("Cargando todos los clientes");
-        return new ResponseEntity<>(clientes, HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Cliente> getById(@PathVariable Long id) {
-        Optional<Cliente> cliente = clientes.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst();
-        if (cliente.isPresent()) {
-            logger.info("Cliente encontrado: {}", cliente.get());
-            return new ResponseEntity<>(cliente.get(), HttpStatus.OK);
-        } else {
-            logger.warn("Cliente con ID {} no encontrado", id);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+    private final List<Habitacion> habitaciones = new ArrayList<>();
 
     @PostMapping
-    public ResponseEntity<Cliente> create(@RequestBody Cliente nuevo) {
-        if (nuevo.getNombre() == null || nuevo.getGmail() == null || nuevo.getTelefono() == null) {
-            logger.error("Los datos están incompletos para la creación de un cliente: {}", nuevo);
+    public ResponseEntity<Habitacion> crearHabitacion(@RequestBody Habitacion nueva) {
+        if (nueva.getNumero() <= 0 || nueva.getTipo() == null || nueva.getCapacidad() <= 0) {
+            logger.error("Datos inválidos para la habitación: {}", nueva);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        clientes.add(nuevo);
-        logger.info("Cliente añadido: {}", nuevo);
-        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+        habitaciones.add(nueva);
+        logger.info("Habitación creada: {}", nueva);
+        return new ResponseEntity<>(nueva, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Cliente> update(@PathVariable Long id, @RequestBody Cliente actualizado) {
-        for (Cliente c : clientes) {
-            if (c.getId().equals(id)) {
-                c.setNombre(actualizado.getNombre());
-                c.setGmail(actualizado.getGmail());
-                c.setTelefono(actualizado.getTelefono());
-                logger.info("Cliente actualizado: {}", c);
-                return new ResponseEntity<>(c, HttpStatus.OK);
-            }
-        }
-        logger.warn("No se encontró el cliente con ID {} para actualizar", id);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<Cliente> patch(@PathVariable Long id, @RequestBody Cliente datos) {
-        for (Cliente c : clientes) {
-            if (c.getId().equals(id)) {
-                if (datos.getNombre() != null) c.setNombre(datos.getNombre());
-                if (datos.getGmail() != null) c.setGmail(datos.getGmail());
-                if (datos.getTelefono() != null) c.setTelefono(datos.getTelefono());
-                logger.info("Cliente modificado parcialmente: {}", c);
-                return new ResponseEntity<>(c, HttpStatus.OK);
-            }
-        }
-        logger.warn("No se encontró el cliente con ID {} para modificación parcial", id);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
-        boolean eliminado = clientes.removeIf(c -> c.getId().equals(id));
-        if (eliminado) {
-            logger.info("Cliente con ID {} eliminado", id);
-            return new ResponseEntity<>("Cliente eliminado", HttpStatus.OK);
-        } else {
-            logger.warn("No se encontró el cliente con ID {} para eliminar", id);
-            return new ResponseEntity<>("No se encontró el cliente", HttpStatus.NOT_FOUND);
-        }
-    }
-    public static class Cliente {
-        private Long id;
-        private String nombre;
-        private String gmail;
-        private String telefono;
-        public Long getId() {
-            return id;
-        }
-        public String getNombre() {
-            return nombre;
-        }
-        public String getGmail() {
-            return gmail;
-        }
-        public String getTelefono() {
-            return telefono;
-        }
-        public void setId(Long id) {
-            this.id = id;
-        }
-        public void setNombre(String nombre) {
-            this.nombre = nombre;
-        }
-        public void setGmail(String gmail) {
-            this.gmail = gmail;
-        }
-        public void setTelefono(String telefono) {
-            this.telefono = telefono;
-        }
-        @Override
-        public String toString() {
-            return "Cliente{id=" + id + ", nombre='" + nombre + "', gmail='" + gmail + "', telefono='" + telefono + "'}";
-        }
+    @GetMapping
+    public ResponseEntity<List<Habitacion>> obtenerTodas() {
+        return new ResponseEntity<>(habitaciones, HttpStatus.OK);
     }
 }

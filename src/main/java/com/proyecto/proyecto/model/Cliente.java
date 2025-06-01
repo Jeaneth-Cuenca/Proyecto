@@ -1,10 +1,21 @@
 package com.proyecto.proyecto.model;
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "clente")
+
 public class Cliente {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
     private String nombre;
     private String gmail;
     private String telefono;
 
+    /**    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private List<persona> books;
+     **/
     public Cliente() {
     }
 
@@ -47,3 +58,4 @@ public class Cliente {
         this.telefono = telefono;
     }
 }
+
