@@ -18,7 +18,7 @@ public class Persona {
     public Persona(Long id, String nombre, String gmail) {
         this.id = id;
         this.nombre = nombre;
-        this.id = id;
+        this.gmail = gmail;
     }
 
     public Long getId() {
